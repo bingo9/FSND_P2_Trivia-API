@@ -311,7 +311,7 @@ containing a search term.
 
     * A `success` (boolean) status of whether the search was succesful.
 
-##### Saple Response:
+##### Sample Response:
 
 ```JSON
 {
