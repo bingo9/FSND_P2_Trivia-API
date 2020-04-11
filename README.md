@@ -128,11 +128,11 @@ Gets paginated questions.
 
 - General:
 
-* Allows users to play trivia game.
+    * Allows users to play trivia game.
 
-* Requests category and previous question parameters using JSON.
+    * Requests category and previous question parameters using JSON.
 
-* Response object is returned with random question that wasn't in the previous questions.
+    * Response object is returned with random question that wasn't in the previous questions.
 
 - Example: `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d
 '{"previous_questions": [1, 2], "quiz_category": {"type": "Science", "id": "1"}}'
