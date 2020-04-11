@@ -114,9 +114,31 @@ The API is setup to return the following `http` errors:
 
 #### GET /categories
 
+Gets all categories.
 
+`$ curl -X GET http://127.0.0.1:5000/categories`
 
+- Returns:
 
+    * A list of existing categories with `id` (integer) and `type` (string) in JSON.
+
+    * A boolean `success` in JSON.
+
+##### Sample Response:
+
+```JSON
+{
+  "categories": {
+    "1": "Science", 
+    "2": "Art", 
+    "3": "Geography", 
+    "4": "History", 
+    "5": "Entertainment", 
+    "6": "Sports"
+  }, 
+  "success": true
+}
+```
 
 #### GET /questions
 
@@ -225,20 +247,167 @@ Gets paginated questions.
 ```
 
 #### DELETE /questions/<int:question_id>
+
+Deletes question with specified id.
+
+`$ curl -X DELETE http://127.0.0.1:5000/questions/1`
+
+- Returns:
+
+    * Question id of the deleted question `deleted` (integer) in JSON.
+
+    * A boolean `success` (boolean) in JSON.
+
+##### Sample Response:
+
+```JSON
+{
+  "deleted": 2, 
+  "success": true
+}
+```
 #### POST /questions
+
+Two functions are performed with this endpoint.  You can add a new question, and you can search for questions
+containing a search term.
+
+##### 1. Add Question to database
+
+`curl -X POST http://127.0.0.1:5000/questions -d '{ "question" : "Is this a test question?", "category" : "1" , "answer" : "This is a test question!", "difficulty" : 1 }' -H 'Content-Type: application/json'`
+
+- Required:
+
+    * To add a question, you must submit the request with the following required parameters: `question`(string), `answer`(string), `category`(string)
+    and `difficulty` (integer)
+
+- Returns:
+
+    * The id of the question that was created, `id` (integer) in JSON.
+
+    * A `success` (boolean) status of whether the insert was successful.
+
+##### Sample Response:
+
+```JSON
+{
+  "created": 29, 
+  "success": true
+}
+```
+##### 2. Search
+
+`curl -X POST http://127.0.0.1:5000/questions -d '{"searchTerm" : "question"}' -H 'Content-Type: application/json'`
+
+- Required:
+
+    * You must submit a search term, `searchTerm`(string) in order to search for questions containing that term.
+
+- Returns:
+
+    * List of questions that contain the search term within one or more of `id` (integer), `question` (string),
+    `answer`(string), `category`(string), or `difficulty`(integer)
+
+    * A length of the total questions available `total_questions`(integer)
+
+    * A `success` (boolean) status of whether the search was succesful.
+
+##### Saple Response:
+
+```JSON
+{
+  "questions": [
+    {
+      "answer": "This is a test question!", 
+      "category": 1, 
+      "difficulty": 1, 
+      "id": 29, 
+      "question": "Is this a test question?"
+    }
+  ], 
+  "success": true, 
+  "total_questions": 22
+}
+```
+
 #### GET /categories/<int:category_id>/questions
+
+Gets all questions from a category specified by the user.
+
+`$ curl -X GET http://127.0.0.1:5000/categories/5/questions?page=1`
+
+- Required:
+
+    * The `category_id`(integer) is required to specify the id of the category to which the
+    questions belong to.
+
+- Optional Arguments:
+
+    * The `page`(integer) can be used to specify which page of questions to look at, if there
+    are more than 10 questions (defaults to 1 if nothing is submitted for this argument).
+
+- Returns:
+
+    * A list of the questions in the requested category, each of which include `id` (integer),
+    `question` (string), `answer`(string), `category`(string), or `difficulty`(integer).
+
+    * A length of the total questions available in the category `total_questions`(integer).
+
+    * The current category id `current_category`(integer) requested.
+
+    * A `success` (boolean) status of whether the request was succesful.
+
+##### Sample Response:
+
+```JSON
+{
+  "current_category": 5, 
+  "questions": [
+    {
+      "answer": "Tom Cruise", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 4, 
+      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+    }, 
+    {
+      "answer": "Edward Scissorhands", 
+      "category": 5, 
+      "difficulty": 3, 
+      "id": 6, 
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    }
+  ], 
+  "success": true, 
+  "total_questions": 2
+}
+```
 #### POST /quizzes
 
-- General:
+Allows users to play trivia game.
 
-    * Allows users to play trivia game.
+`curl -X POST http://127.0.0.1:5000/quizzes -d '{"previous_questions" : [1, 2], "quiz_category" : {"type" : "Science", "id" : "1"}} ' -H 'Content-Type: application/json'`
 
-    * Requests category and previous question parameters using JSON.
+- Returns:
 
-    * Response object is returned with random question that wasn't in the previous questions.
+    * A boolean determining `success` in JSON.
 
-- Example: `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d
-'{"previous_questions": [1, 2], "quiz_category": {"type": "Science", "id": "1"}}'
+    * One question as a dict that contains an `id` (integer), `question` (string),
+    `answer` (string), `category` (string), `difficulty` (integer).
+
+##### Sample Response:
+
+```JSON
+{
+  "question": {
+    "answer": "Alexander Fleming", 
+    "category": 1, 
+    "difficulty": 3, 
+    "id": 21, 
+    "question": "Who discovered penicillin?"
+  }, 
+  "success": true
+}
+```
 
 ## Authors
 Github user bingo9 was the author of the API(`__init__.py`), the API test code (`test_flaskr.py`), and the README you are currently reading.
