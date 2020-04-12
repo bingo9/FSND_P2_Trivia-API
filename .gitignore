@@ -1,0 +1,4 @@
+#ignore directories
+/backend/__pycache__/
+/backend/flaskr/__pycache__/
+/frontend/node_modules/
